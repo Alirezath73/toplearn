@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { DialogOverlay, DialogContent } from "@reach/dialog";
-import {
-  createNewCourse,
-  editCourse,
-  updateCourse,
-} from "../../../actions/courses";
+import { editCourse } from "../../../actions/courses";
 
 const UpdateCourseDialog = ({ course }) => {
   const [showDialog, setShowDialog] = React.useState(false);
@@ -27,6 +23,12 @@ const UpdateCourseDialog = ({ course }) => {
     setImageUrl(course.imageUrl);
     setCourseId(course._id);
 
+    return () => {
+      setTitle();
+      setPrice();
+      setInfo();
+      setCourseId();
+    };
   }, [course]);
 
   const handleSubmit = (event) => {

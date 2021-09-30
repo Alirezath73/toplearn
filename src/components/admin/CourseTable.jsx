@@ -1,3 +1,4 @@
+import _ from "lodash";
 import React, { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeCourse } from "../../actions/courses";
@@ -19,7 +20,21 @@ const CourseTable = () => {
   const dispatch = useDispatch();
   const courses = useSelector((state) => state.courses);
 
-  const courseData = paginate(courses, currentPage, perPage);
+  const [search, SetSearch] = useState();
+  const courseList = [...courses];
+  let filteredCourses = courseList;
+
+  if (search) {
+    filteredCourses = courseList.filter((course) =>
+      course.title.includes(search)
+    );
+  }
+
+  const sortedCourses = _.orderBy(filteredCourses, ["price"], ["desc"]);
+
+  console.log(sortedCourses);
+
+  const courseData = paginate(sortedCourses, currentPage, perPage);
 
   return (
     <section style={{ marginTop: "5em", marginRight: "2em" }}>
@@ -45,6 +60,9 @@ const CourseTable = () => {
                 width: "50%",
                 float: "left",
                 marginLeft: "2em",
+              }}
+              onChange={(event) => {
+                SetSearch(event.target.value);
               }}
             />
           </div>
@@ -90,7 +108,7 @@ const CourseTable = () => {
         </div>
         <div className="navbar-fixed-bottom text-center footer">
           <Pagination
-            totalCourse={courses.length}
+            totalCourse={sortedCourses.length}
             currentPage={currentPage}
             perPage={perPage}
             onPageChange={handlePageChange}
